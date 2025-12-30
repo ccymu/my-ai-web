@@ -1,7 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-// ⚠️ 确保不要加 export const runtime = 'edge';
+// 🚨 强制使用 Node.js 运行时，解决 Edge 环境下 Google SDK 报错的问题
+export const runtime = "nodejs"; 
 
 export async function POST(req: Request) {
   try {
@@ -13,8 +14,9 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { message } = body;
 
-    // 使用最新模型
+    // 初始化 Google AI
     const genAI = new GoogleGenerativeAI(apiKey);
+    // 使用 flash 模型，如果这次还报错，代码会自动捕捉
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const result = await model.generateContent(message);
@@ -25,6 +27,8 @@ export async function POST(req: Request) {
 
   } catch (error: any) {
     console.error("AI Error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ 
+      error: `AI 响应失败: ${error.message}` 
+    }, { status: 500 });
   }
 }
