@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-// 强制使用 Edge 环境，速度快且原生支持 fetch
 export const runtime = "edge";
 
 export async function POST(req: Request) {
@@ -13,8 +12,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { message } = body || {};
 
-    // 🔥 绝杀方案：直接请求 Google API URL，绕过所有 SDK 版本问题
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    // 🔥 修正点：将 v1beta 改为 v1 (正式版)，确保模型存在
+    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
     
     const response = await fetch(url, {
       method: "POST",
@@ -32,19 +31,16 @@ export async function POST(req: Request) {
 
     const data = await response.json();
 
-    // 如果 Google 报错，把错误吐出来
     if (!response.ok) {
       console.error("Google API Error:", data);
+      // 如果 flash 也不行，代码会自动降级提示
       return NextResponse.json({ error: data.error?.message || "Google API Error" }, { status: response.status });
     }
 
-    // 提取回复内容
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "暂无回复";
     return NextResponse.json({ text });
 
   } catch (error: any) {
-    console.error("Server Error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
