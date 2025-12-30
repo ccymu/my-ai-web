@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
     // ⬇️ 重点：直接拼写 URL，绕过所有 SDK 版本限制
     // 我们显式调用 v1beta 版本，指定 gemini-1.5-flash 模型
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${apiKey}`;
 
     const response = await fetch(url, {
       method: "POST",
