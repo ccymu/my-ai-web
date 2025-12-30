@@ -1,8 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-export const runtime = "edge"; // 尝试使用 Edge Runtime 提高兼容性
-
 export async function POST(req: Request) {
   try {
     // 1. 打印日志确认代码已更新
