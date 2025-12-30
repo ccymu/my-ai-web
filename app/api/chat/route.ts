@@ -20,6 +20,7 @@ export async function POST(req: Request) {
         // 3. 调用 AI
         console.log("🔄 正在尝试连接 Google Gemini...");
         // 👇 把 "gemini-pro" 改成 "gemini-1.5-flash"
+        // 改成 gemini-1.5-flash，这是目前最稳的版本
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const result = await model.generateContent(message);
         const response = await result.response;
